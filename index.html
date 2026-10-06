@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>מסע הלילה של רוני</title>
+<style>
+:root{--bg:#10151c;--card:#19222d;--text:#f4f1e8;--muted:#b8c0c8;--accent:#e8b45b;--ok:#73c991}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(#0c1117,#17212b);color:var(--text);font-family:Arial,sans-serif;min-height:100vh}
+main{max-width:620px;margin:auto;padding:24px 18px 60px}.screen{display:none}.screen.active{display:block}
+h1{font-size:2.2rem;margin:30px 0 8px}h2{font-size:1.7rem;margin-top:28px}.sub{color:var(--muted);line-height:1.6}
+.card{background:var(--card);border:1px solid #2d3946;border-radius:18px;padding:20px;margin:18px 0;line-height:1.65}
+button{width:100%;padding:15px;margin:8px 0;border:0;border-radius:14px;font-size:1.05rem;font-weight:700;background:var(--accent);color:#17130d}
+button.secondary{background:#293746;color:var(--text)} input,textarea{width:100%;padding:14px;border-radius:12px;border:1px solid #41505f;background:#0d141b;color:white;font-size:1rem;margin:8px 0}
+.choice{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.choice button{min-height:110px;background:#263442;color:#fff}.tiny{font-size:.9rem;color:var(--muted)}
+.good{color:var(--ok)}.hidden{display:none}.dice{font-size:4rem;text-align:center;margin:16px}.navrow{display:flex;gap:8px;margin-top:22px}.navrow button{width:auto;flex:1}.backbtn{background:#293746;color:var(--text)}
+.progress{height:6px;background:#26313d;position:fixed;top:0;left:0;right:0}.bar{height:100%;background:var(--accent);width:0}
+ol{padding-right:22px} .quote{font-size:1.15rem;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<main>
+<section class="screen active" id="s0">
+<h1>מסע הלילה של רוני</h1>
+<p class="sub">חמש תחנות. לילה אחד. אבא אחד שלא תמיד יעזור.</p>
+<div class="card quote">הלילה תצטרכי לחשוב, לבחור, לנווט, לעזור, לעשות כמה שטויות ולהגיע עד הסוף.</div>
+<button onclick="go(1)">אני מוכנה</button>
+</section>
+
+<section class="screen" id="s1">
+<h2>היעד הראשון</h2>
+<div class="card quote">הלילה מתחיל במקום שבו אנחנו נשארים על הקרקע אבל אחרים ממריאים לשמיים.<br><br>לא צריך דרכון. לא צריך כרטיס טיסה. וכן כדאי להסתכל למעלה.<br><br>לאן רוכבים?</div>
+<input id="a1" placeholder="התשובה שלך">
+<button onclick="checkRamat()">בדיקת תשובה</button>
+<p id="m1"></p>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s2">
+<h2>תחנה 1</h2><p class="sub">רמת דוד</p>
+<div class="card">שלושה כרטיסים מחכים לך. בחרי אחד. אין החלפות.</div>
+<div class="choice">
+<button onclick="reveal('courage')">?</button><button onclick="reveal('creative')">?</button><button onclick="reveal('luck')">?</button>
+</div>
+<div id="task" class="card hidden"></div>
+<button id="done1" class="hidden" onclick="go(3)">סיימתי את המשימה</button>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s3">
+<h2>התחנה הבאה</h2>
+<div class="card">היעד הבא הוא מקום קטן בשטח ששמו מחבר בין תל לבין מעיין. לא מצופה ממך לדעת איפה הוא נמצא.</div>
+<button onclick="document.getElementById('loc').classList.remove('hidden')">ניסיתי לפתור. תן לי את המיקום</button>
+<div id="loc" class="card hidden">אבא נותן עכשיו את נקודת הניווט לעין ביידה. את מובילה.</div>
+<button class="secondary" onclick="go(4)">הגענו</button>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s4">
+<h2>מצב חירום</h2><p class="sub">עין ביידה</p>
+<div class="card"><p>אבא נפל מהאופניים ונפצע ביד. הוא בהכרה ומרגיש בסדר אבל יש פצע שמדמם.</p>
+<p>מרגע זה אבא לא עוזר.</p>
+<ol><li>הוציאי את ערכת העזרה הראשונה.</li><li>החליטי במה להשתמש.</li><li>טפלי בפציעה וחבשי את היד.</li><li>בסיום הסבירי מה עשית.</li></ol>
+<p>אם אבא שרד – עברת.</p></div>
+<button onclick="go(5)">אבא שרד</button>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s5">
+<h2>היעד הבא</h2>
+<div class="card quote">חפשי משהו גבוה שנבנה כדי שמה שבתוכו יוכל להגיע לבתים. הוא נמצא בלב אחד היישובים הכי עגולים בארץ.</div>
+<input id="a2" placeholder="לאן ממשיכים?">
+<button onclick="checkWater()">בדיקת תשובה</button><p id="m2"></p>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s6">
+<h2>כמה אנחנו באמת מכירים?</h2><p class="sub">מגדל המים בנהלל</p>
+<div class="card">ענו בנפרד ואז השוו תשובות.<br><br>
+1. מה הדבר שאבא הכי גאה בו אצל רוני?<br><br>
+2. אם אבא היה יכול לצאת מחר להרפתקה בלי שום מגבלה לאן הוא היה נוסע?<br><br>
+3. מה לדעתך אבא הכי אוהב לעשות עם רוני?<br><br>
+ועכשיו אבא עונה על אותן שאלות מהכיוון של רוני.</div>
+<button onclick="go(7)">השווינו תשובות</button>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s7">
+<h2>היעד הבא</h2>
+<div class="card quote">פעם באו לכאן כדי להירטב, לשחות ולהתקרר. הלילה אנחנו מגיעים עם קסדות ולא עם מגבות. לאן?</div>
+<input id="a3" placeholder="התשובה שלך">
+<button onclick="checkPool()">בדיקת תשובה</button><p id="m3"></p>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s8">
+<h2>שידור חי</h2><p class="sub">בריכת נהלל</p>
+<div class="card">את כתבת השטח שלנו. יש לך 2 דקות להתכונן לדיווח של 30 שניות על אירוע מסתורי שהתרחש כאן הלילה.<br><br>
+חייבים להופיע: רוכבת אופניים מסתורית, אבא מבולבל, משהו שקרה בתוך הבריכה והסבר מופרך למה המשטרה עדיין לא הגיעה.<br><br>אין טייק שני.</div>
+<button onclick="startTimer(120)">התחל 2 דקות הכנה</button>
+<div class="dice" id="timer"></div>
+<button onclick="go(9)">הדיווח הושלם</button>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s9">
+<h2>החידה האחרונה</h2>
+<div class="card quote">התחלת את המסע ליד מי שממריא לשמיים, ועכשיו הגיע הזמן שגם אנחנו נעלה.<br><br>
+חפשי מקום שלא זז כבר אלפי שנים אבל ראה אינספור אנשים עוברים לידו.<br><br>
+הוא משקיף על העמק, קרוב מאוד למקום שבו אנחנו נמצאים ואת כבר היית בו בעבר.<br><br>שם מחכה לך התחנה האחרונה.</div>
+<input id="a4" placeholder="לאן?">
+<button onclick="checkShimron()">בדיקת תשובה</button><p id="m4"></p>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s10">
+<h2>הגעת</h2><p class="sub">תל שמרון</p>
+<div class="card quote">רכבת בלילה. מצאת את הדרך. קיבלת החלטות. טיפלת באבא הפצוע. צחקת ועשית שטויות. והגעת עד לכאן.</div>
+<div class="card">עכשיו מכינים יחד משהו חם מפק"ל הקפה. אחר כך הסתכלי על העמק ועני לאבא:<br><br>
+1. דבר אחד שאני רוצה לנסות בפעם הראשונה.<br><br>
+2. דבר אחד שאני רוצה להיות בו יותר עצמאית.<br><br>
+3. דבר אחד שאני רוצה שנעשה ביחד.<br><br>
+ועכשיו שאלי את אבא שאלה אחת. כל שאלה שאת רוצה. הוא חייב לענות באמת.</div>
+<button onclick="go(11)">סיימנו</button>
+
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
+</section>
+
+<section class="screen" id="s11">
+<h1>סיימת את מסע הלילה</h1>
+<div class="card quote">עכשיו הטלפון יכול לנוח.<br><br>לאבא יש משהו אחר לתת לך.</div>
+<p class="sub">המכתב האחרון מחכה אצל אבא.</p>
+<button class="secondary" onclick="restart()">התחל את המסע מחדש</button>
+<div class="navrow"><button class="backbtn" onclick="back()">← חזרה לתחנה הקודמת</button></div>
+</section>
+</main>
+<script>
+let current=+(localStorage.roniStage||0);
+function go(n){current=n;localStorage.roniStage=n;show()}
+function back(){if(current>0){current--;localStorage.roniStage=current;show()}}
+function restart(){
+  if(confirm('להתחיל את המסע מחדש? ההתקדמות השמורה תימחק.')){
+    localStorage.removeItem('roniStage');
+    current=0;
+    document.querySelectorAll('input').forEach(x=>x.value='');
+    document.querySelectorAll('[id^="m"]').forEach(x=>x.textContent='');
+    show();
+  }
+}
+function show(){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById('s'+current).classList.add('active');document.getElementById('bar').style.width=(current/11*100)+'%';scrollTo(0,0)}
+function norm(s){return s.trim().replace(/[״"'']/g,'').toLowerCase()}
+function checkRamat(){let v=norm(a1.value);if(v.includes('רמת דוד')){m1.innerHTML='<span class="good">נכון. לרמת דוד!</span>';setTimeout(()=>go(2),700)}else m1.textContent='עוד ניסיון. חשבי על מקום בעמק שממנו ממריאים מטוסים.'}
+function reveal(type){
+ let t={courage:`<h3>אומץ</h3>ספרי לאבא על משהו שאת קצת מפחדת לעשות אבל ממש רוצה לנסות בשנה הקרובה.<br><br>ועכשיו תור אבא לענות על אותה שאלה.`,
+ creative:`<h3>יצירתיות</h3>יש לך 2 דקות. בחרי 3 דברים שיש בתיקי הרכיבה או בסביבה והמציאי בעזרתם משהו שימושי לשני רוכבים שנתקעו בלילה בשטח. בסוף הסבירי מה המצאת.`,
+ luck:`<h3>מזל</h3><p>הקובייה קובעת.</p><button onclick="roll()">הטילי קובייה</button><div class="dice" id="die">⚄</div><div id="fortune"></div>`};
+ task.innerHTML=t[type];task.classList.remove('hidden');document.querySelector('.choice').classList.add('hidden');done1.classList.remove('hidden')
+}
+function roll(){let n=1+Math.floor(Math.random()*6);die.textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][n-1];let r=[
+'סלפי של שניכם בפרצוף הכי מטופש שאתם מסוגלים לעשות.',
+'במשך דקה את מובילה ואסור לאבא לדבר.',
+'בחרי שיר. אבא חייב לשיר איתך את הפזמון.',
+'בתוך 30 שניות מצאי בסביבה 3 דברים שמתחילים באותה אות.',
+'מזל רע לאבא: תני לאבא משימה מצחיקה והוא חייב לבצע אותה.',
+"ג׳קפוט: אין משימה. זכית בזכות לבחור את החטיף בעצירה האחרונה."
+];fortune.textContent=r[n-1]}
+function checkWater(){let v=norm(a2.value);if(v.includes('מגדל')||v.includes('מים')){m2.innerHTML='<span class="good">בדיוק. מגדל המים בנהלל.</span>';setTimeout(()=>go(6),700)}else m2.textContent='רמז: חפשי משהו גבוה שקשור למים.'}
+function checkPool(){let v=norm(a3.value);if(v.includes('בריכ')){m3.innerHTML='<span class="good">נכון. לבריכת נהלל.</span>';setTimeout(()=>go(8),700)}else m3.textContent='עוד ניסיון. איפה בנהלל היית מגיעה עם בגד ים?'}
+function checkShimron(){let v=norm(a4.value);if(v.includes('שמרון')||v.includes('שימרון')){m4.innerHTML='<span class="good">נכון. תל שמרון. התחנה האחרונה.</span>';setTimeout(()=>go(10),800)}else m4.textContent='את מכירה את המקום. חשבי על נקודת תצפית גבוהה ליד נהלל.'}
+let ti;function startTimer(s){clearInterval(ti);let x=s;function draw(){timer.textContent=Math.floor(x/60)+':'+String(x%60).padStart(2,'0');if(x--<=0){clearInterval(ti);timer.textContent='זמן לשידור!'}}draw();ti=setInterval(draw,1000)}
+show()
+</script>
+</body></html>
