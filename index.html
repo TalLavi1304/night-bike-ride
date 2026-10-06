@@ -34,6 +34,11 @@ ol{padding-right:22px} .quote{font-size:1.15rem;line-height:1.8}
 <input id="a1" placeholder="התשובה שלך">
 <button onclick="checkRamat()">בדיקת תשובה</button>
 <p id="m1"></p>
+<button class="secondary" id="hb1" onclick="showHint(1)">צריכה רמז</button>
+<p id="ht1" class="hidden"></p>
+<button class="secondary hidden" id="rb1" onclick="showAnswer(1)">עדיין לא יודעת – גלה את התשובה</button>
+<p id="an1" class="hidden"></p>
+<button class="secondary hidden" id="cb1" onclick="go(2)">ממשיכים</button>
 
 <div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
 </section>
@@ -76,6 +81,11 @@ ol{padding-right:22px} .quote{font-size:1.15rem;line-height:1.8}
 <div class="card quote">חפשי משהו גבוה שנבנה כדי שמה שבתוכו יוכל להגיע לבתים. הוא נמצא בלב אחד היישובים הכי עגולים בארץ.</div>
 <input id="a2" placeholder="לאן ממשיכים?">
 <button onclick="checkWater()">בדיקת תשובה</button><p id="m2"></p>
+<button class="secondary" id="hb2" onclick="showHint(2)">צריכה רמז</button>
+<p id="ht2" class="hidden"></p>
+<button class="secondary hidden" id="rb2" onclick="showAnswer(2)">עדיין לא יודעת – גלה את התשובה</button>
+<p id="an2" class="hidden"></p>
+<button class="secondary hidden" id="cb2" onclick="go(6)">ממשיכים</button>
 
 <div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
 </section>
@@ -97,6 +107,11 @@ ol{padding-right:22px} .quote{font-size:1.15rem;line-height:1.8}
 <div class="card quote">פעם באו לכאן כדי להירטב, לשחות ולהתקרר. הלילה אנחנו מגיעים עם קסדות ולא עם מגבות. לאן?</div>
 <input id="a3" placeholder="התשובה שלך">
 <button onclick="checkPool()">בדיקת תשובה</button><p id="m3"></p>
+<button class="secondary" id="hb3" onclick="showHint(3)">צריכה רמז</button>
+<p id="ht3" class="hidden"></p>
+<button class="secondary hidden" id="rb3" onclick="showAnswer(3)">עדיין לא יודעת – גלה את התשובה</button>
+<p id="an3" class="hidden"></p>
+<button class="secondary hidden" id="cb3" onclick="go(8)">ממשיכים</button>
 
 <div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
 </section>
@@ -119,6 +134,11 @@ ol{padding-right:22px} .quote{font-size:1.15rem;line-height:1.8}
 הוא משקיף על העמק, קרוב מאוד למקום שבו אנחנו נמצאים ואת כבר היית בו בעבר.<br><br>שם מחכה לך התחנה האחרונה.</div>
 <input id="a4" placeholder="לאן?">
 <button onclick="checkShimron()">בדיקת תשובה</button><p id="m4"></p>
+<button class="secondary" id="hb4" onclick="showHint(4)">צריכה רמז</button>
+<p id="ht4" class="hidden"></p>
+<button class="secondary hidden" id="rb4" onclick="showAnswer(4)">עדיין לא יודעת – גלה את התשובה</button>
+<p id="an4" class="hidden"></p>
+<button class="secondary hidden" id="cb4" onclick="go(10)">ממשיכים</button>
 
 <div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
 </section>
@@ -146,6 +166,12 @@ ol{padding-right:22px} .quote{font-size:1.15rem;line-height:1.8}
 </main>
 <script>
 let current=+(localStorage.roniStage||0);
+const riddleHelp={
+  1:{hint:'רמז נוסף: זה שדה התעופה / הבסיס בעמק. השם מתחיל ב״רמת״.',answer:'רמת דוד'},
+  2:{hint:'רמז נוסף: היישוב העגול הוא נהלל. חפשי שם את המגדל שממנו יוצאים מים.',answer:'מגדל המים בנהלל'},
+  3:{hint:'רמז נוסף: זה לא מגדל המים. חפשי בנהלל את המקום שבו פעם שחו.',answer:'בריכת נהלל'},
+  4:{hint:'רמז נוסף: זה תל עתיק ליד נהלל, נקודת תצפית על העמק. השם מתחיל ב״תל״.',answer:'תל שמרון'}
+};
 function go(n){current=n;localStorage.roniStage=n;show()}
 function back(){if(current>0){current--;localStorage.roniStage=current;show()}}
 function restart(){
@@ -157,7 +183,32 @@ function restart(){
     show();
   }
 }
-function show(){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById('s'+current).classList.add('active');document.getElementById('bar').style.width=(current/11*100)+'%';scrollTo(0,0)}
+function resetRiddleHelp(){
+  [1,2,3,4].forEach(i=>{
+    const hb=document.getElementById('hb'+i),ht=document.getElementById('ht'+i),rb=document.getElementById('rb'+i),an=document.getElementById('an'+i),cb=document.getElementById('cb'+i);
+    if(!hb)return;
+    hb.classList.remove('hidden');
+    ht.classList.add('hidden');ht.textContent='';
+    rb.classList.add('hidden');
+    an.classList.add('hidden');an.innerHTML='';
+    cb.classList.add('hidden');
+  });
+}
+function showHint(i){
+  const h=riddleHelp[i];
+  const ht=document.getElementById('ht'+i),rb=document.getElementById('rb'+i);
+  ht.textContent=h.hint;
+  ht.classList.remove('hidden');
+  rb.classList.remove('hidden');
+}
+function showAnswer(i){
+  const h=riddleHelp[i];
+  const an=document.getElementById('an'+i),cb=document.getElementById('cb'+i);
+  an.innerHTML='<span class="good">התשובה: '+h.answer+'</span>';
+  an.classList.remove('hidden');
+  cb.classList.remove('hidden');
+}
+function show(){resetRiddleHelp();document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById('s'+current).classList.add('active');document.getElementById('bar').style.width=(current/11*100)+'%';scrollTo(0,0)}
 function norm(s){return s.trim().replace(/[״"'']/g,'').toLowerCase()}
 function checkRamat(){let v=norm(a1.value);if(v.includes('רמת דוד')){m1.innerHTML='<span class="good">נכון. לרמת דוד!</span>';setTimeout(()=>go(2),700)}else m1.textContent='עוד ניסיון. חשבי על מקום בעמק שממנו ממריאים מטוסים.'}
 function reveal(type){
