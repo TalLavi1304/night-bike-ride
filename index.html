@@ -50,6 +50,7 @@ ol{padding-right:22px} .quote{font-size:1.15rem;line-height:1.8}
 <button onclick="reveal('courage')">?</button><button onclick="reveal('creative')">?</button><button onclick="reveal('luck')">?</button>
 </div>
 <div id="task" class="card hidden"></div>
+<button id="chooseAgain" class="secondary hidden" onclick="resetCardSelection()">חזרה לבחירת כרטיס</button>
 <button id="done1" class="hidden" onclick="go(3)">סיימתי את המשימה</button>
 
 <div class="navrow"><button class="backbtn" onclick="back()">← חזרה</button></div>
@@ -215,7 +216,14 @@ function reveal(type){
  let t={courage:`<h3>אומץ</h3>ספרי לאבא על משהו שאת קצת מפחדת לעשות אבל ממש רוצה לנסות בשנה הקרובה.<br><br>ועכשיו תור אבא לענות על אותה שאלה.`,
  creative:`<h3>יצירתיות</h3>יש לך 2 דקות. בחרי 3 דברים שיש בתיקי הרכיבה או בסביבה והמציאי בעזרתם משהו שימושי לשני רוכבים שנתקעו בלילה בשטח. בסוף הסבירי מה המצאת.`,
  luck:`<h3>מזל</h3><p>הקובייה קובעת.</p><button onclick="roll()">הטילי קובייה</button><div class="dice" id="die">⚄</div><div id="fortune"></div>`};
- task.innerHTML=t[type];task.classList.remove('hidden');document.querySelector('.choice').classList.add('hidden');done1.classList.remove('hidden')
+ task.innerHTML=t[type];task.classList.remove('hidden');document.querySelector('#s2 .choice').classList.add('hidden');document.getElementById('chooseAgain').classList.remove('hidden');done1.classList.remove('hidden')
+}
+function resetCardSelection(){
+  task.innerHTML='';
+  task.classList.add('hidden');
+  document.querySelector('#s2 .choice').classList.remove('hidden');
+  document.getElementById('chooseAgain').classList.add('hidden');
+  done1.classList.add('hidden');
 }
 function roll(){let n=1+Math.floor(Math.random()*6);die.textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][n-1];let r=[
 'סלפי של שניכם בפרצוף הכי מטופש שאתם מסוגלים לעשות.',
